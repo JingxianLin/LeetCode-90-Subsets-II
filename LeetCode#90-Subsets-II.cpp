@@ -1,32 +1,24 @@
 class Solution {
 public:
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
-        vector<vector<int>> result = {{}};
-        
-        sort(nums.begin(), nums.end());
-        
-        int add = 0;
-        
-        for (int i = 0; i < nums.size(); i++) {            
-            int N = result.size();
-            
-            if (i == 0 || nums[i] != nums[i-1]) {
-                for (int j = 0; j < N; j++) {
-                    vector<int>temp = result[j];
-                    temp.push_back(nums[i]);
-                    result.push_back(temp);
-                }
-                add = N;                    
-            }
-            else if (nums[i] == nums[i-1]) {
-                for (int j = N - add; j < N; j++) {
-                    vector<int> temp = result[j];
-                    temp.push_back(nums[i]);
-                    result.push_back(temp);
-                }                
-            }            
-        }
-        
-        return result;
+        const int n = nums.size();
+        sort(begin(nums), end(nums));
+        vector<vector<int>> ans;
+        vector<int> cur;
+   
+        function<void(int)> dfs = [&](int s) {
+          ans.push_back(cur);
+          if (cur.size() == n)
+            return;      
+          for (int i = s; i < n; ++i) {
+            if (i > s && nums[i] == nums[i - 1]) continue;
+              cur.push_back(nums[i]);
+            dfs(i + 1);
+            cur.pop_back();
+          }
+        };
+
+        dfs(0);
+        return ans;
     }
 };
